@@ -18,6 +18,7 @@ pub struct Alignment {
     vertical: EnumValue<VerticalAlignmentValues>,
     wrap_text: BooleanValue,
     text_rotation: UInt32Value,
+    indent: UInt32Value,
 }
 
 impl Alignment {
@@ -61,15 +62,26 @@ impl Alignment {
         self.text_rotation.set_value(value);
     }
 
+    #[inline]
+    pub fn get_indent(&self) -> &u32 {
+        self.indent.get_value()
+    }
+
+    #[inline]
+    pub fn set_indent(&mut self, value: u32) {
+        self.indent.set_value(value);
+    }
+
     pub(crate) fn get_hash_code(&self) -> String {
         format!(
             "{:x}",
             md5::Md5::digest(format!(
-                "{}{}{}{}",
+                "{}{}{}{}{}",
                 &self.horizontal.get_hash_string(),
                 &self.vertical.get_hash_string(),
                 &self.wrap_text.get_hash_string(),
                 &self.text_rotation.get_hash_string(),
+                &self.indent.get_hash_string(),
             ))
         )
     }
@@ -84,6 +96,7 @@ impl Alignment {
         set_string_from_xml!(self, e, vertical, "vertical");
         set_string_from_xml!(self, e, wrap_text, "wrapText");
         set_string_from_xml!(self, e, text_rotation, "textRotation");
+        set_string_from_xml!(self, e, indent, "indent");
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
@@ -101,6 +114,10 @@ impl Alignment {
         let text_rotation = self.text_rotation.get_value_string();
         if self.text_rotation.has_value() {
             attributes.push(("textRotation", &text_rotation));
+        }
+        let indent = self.indent.get_value_string();
+        if self.indent.has_value() {
+            attributes.push(("indent", &indent));
         }
         write_start_tag(writer, "alignment", attributes, true);
     }
