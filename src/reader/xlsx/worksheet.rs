@@ -270,12 +270,15 @@ fn get_hyperlink(
     raw_relationships: Option<&RawRelationships>,
 ) -> (String, Hyperlink) {
     let mut hyperlink = Hyperlink::default();
-    let mut rid = String::new();
+    use quick_xml::escape;
 
     let coordition = get_attribute(e, b"ref").unwrap_or_default();
     if let Some(v) = get_attribute(e, b"location") {
-        hyperlink.set_url(v);
+        hyperlink.set_url(escape::unescape(&v).unwrap().to_string());
         hyperlink.set_location(true);
+    }
+    if let Some(v) = get_attribute(e, b"tooltip") {
+        hyperlink.set_tooltip(escape::unescape(&v).unwrap().to_string());
     }
     if let Some(v) = get_attribute(e, b"r:id") {
         let relationship = raw_relationships.unwrap().get_relationship_by_rid(&v);

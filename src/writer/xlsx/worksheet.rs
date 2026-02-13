@@ -226,6 +226,9 @@ pub(crate) fn write<W: io::Seek + io::Write>(
                 attributes.push(("r:id", &r_id_str));
                 r_id += 1;
             }
+            if !hyperlink.get_tooltip().is_empty() {
+                attributes.push(("tooltip", hyperlink.get_tooltip()));
+            }
             write_start_tag(&mut writer, "hyperlink", attributes, true);
         }
 
