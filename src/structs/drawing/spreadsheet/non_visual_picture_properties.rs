@@ -59,11 +59,11 @@ impl NonVisualPictureProperties {
             reader,
             Event::Start(ref e) => {
                 match e.name().into_inner() {
-                    b"xdr:cNvPicPr" => {
+                    b"xdr:cNvPicPr" | b"cNvPicPr" => {
                         self.non_visual_picture_drawing_properties
                             .set_attributes(reader, e, false);
                         }
-                    b"xdr:cNvPr" => {
+                    b"xdr:cNvPr" | b"cNvPr" => {
                         self.non_visual_drawing_properties
                             .set_attributes(reader, e, false);
                         }
@@ -72,11 +72,11 @@ impl NonVisualPictureProperties {
             },
             Event::Empty(ref e) => {
                 match e.name().into_inner() {
-                    b"xdr:cNvPicPr" => {
+                    b"xdr:cNvPicPr" | b"cNvPicPr" => {
                         self.non_visual_picture_drawing_properties
                             .set_attributes(reader, e, true);
                         }
-                    b"xdr:cNvPr" => {
+                    b"xdr:cNvPr" | b"cNvPr" => {
                         self.non_visual_drawing_properties
                             .set_attributes(reader, e, true);
                         }
@@ -84,11 +84,11 @@ impl NonVisualPictureProperties {
                 }
             },
             Event::End(ref e) => {
-                if e.name().into_inner() == b"xdr:nvPicPr" {
+                if matches!(e.name().into_inner(), b"xdr:nvPicPr" | b"nvPicPr") {
                     return;
                 }
             },
-            Event::Eof => panic!("Error: Could not find {} end element", "xdr:nvPicPr")
+            Event::Eof => panic!("Error: Could not find {} end element", "nvPicPr")
         );
     }
 
